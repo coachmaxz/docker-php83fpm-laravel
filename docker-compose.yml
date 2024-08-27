@@ -49,6 +49,49 @@ services:
     networks:
       - php83fpm_network
 
+# ======================================================================
+# Database
+# ======================================================================
+
+  db_mariadb_01:
+    image: mariadb:11.4.3
+    container_name: laravel-mariadb-01
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_PASSWORD=123456
+      - VIRTUAL_PORT=3306
+      - TERM=xterm
+    volumes:
+      - ./data/mariadb_01:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - php83fpm_network
+
+  laravel_pma_01:
+      image: phpmyadmin/phpmyadmin:5.2.1
+      container_name: laravel-pma-01
+      restart: always
+      environment:
+        - PMA_ARBITRARY=1
+        - PMA_HOST=mariadb
+        - PMA_USER=root
+        - PMA_PASSWORD=123456
+        - MYSQL_ROOT_PASSWORD=123456
+        - MYSQL_PASSWORD=123456
+        - VIRTUAL_PORT=8080
+        - TERM=xterm
+      links:
+        - "laravel_mariadb_01:mariadb"
+      volumes:
+        - ./pma.conf/.htpasswd:/etc/apache2/.htpasswd
+        - ./pma.conf/default.conf:/etc/apache2/sites-available/000-default.conf
+      ports:
+        - "8080:80"
+      networks:
+        - php83fpm_network
+
 networks:
   php83fpm_network:
     driver: bridge
