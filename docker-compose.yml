@@ -69,7 +69,7 @@ services:
     networks:
       - php83fpm_network
 
-  laravel_pma_01:
+  db_pma_01:
     image: phpmyadmin/phpmyadmin:5.2.1
     container_name: laravel-pma-01
     restart: always
@@ -83,7 +83,7 @@ services:
       - VIRTUAL_PORT=8080
       - TERM=xterm
     links:
-      - "laravel_mariadb_01:mariadb"
+      - "db_mariadb_01:mariadb"
     volumes:
       - ./pma.conf/.htpasswd:/etc/apache2/.htpasswd
       - ./pma.conf/default.conf:/etc/apache2/sites-available/000-default.conf
